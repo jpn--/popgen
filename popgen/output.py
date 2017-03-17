@@ -1,9 +1,12 @@
+from __future__ import print_function
 import os
 import time
+from warnings import warn
 
 import pandas as pd
 import numpy as np
 
+from .config import ConfigError
 
 class Syn_Population(object):
     def __init__(
@@ -241,7 +244,11 @@ class Syn_Population(object):
         self.scenario_config.write_to_file(filepath)
 
     def _export_performance_data(self):
-        values_to_export = self.scenario_config.outputs.performance
+        try:
+            values_to_export = self.scenario_config.outputs.performance
+        except ConfigError:
+            warn('no performance values to export, set outputs.performance in YAML to generate these')
+            return
         # print "Performance values to export:", values_to_export
         if "ipf" in values_to_export:
             self._export_all_df_in_dict(
@@ -265,7 +272,11 @@ class Syn_Population(object):
                 self.draw_population_obj.draws_performance, "draws")
 
     def _export_weights(self):
-        export_weights_config = self.scenario_config.outputs.weights
+        try:
+            export_weights_config = self.scenario_config.outputs.weights
+        except ConfigError:
+            warn('no weights to export, set outputs.weights in config.yaml to generate these')
+            return
         if export_weights_config.export:
             df = pd.DataFrame(self.run_ipu_obj.region_sample_weights)
             if export_weights_config.collate_across_geos:
@@ -308,8 +319,12 @@ class Syn_Population(object):
 
     def _export_synthetic_population(self):
         t = time.time()
-        synthetic_population_config = (
-            self.scenario_config.outputs.synthetic_population)
+        try:
+            synthetic_population_config = (
+                self.scenario_config.outputs.synthetic_population)
+        except ConfigError:
+            warn('syn pop files not called, set outputs.synthetic_population in config.yaml to generate these files')
+            return
         sort_columns = self.pop_syn_all_id_columns
         for entity_type in self.entity_types:
             (filename, filetype) = (
@@ -341,7 +356,11 @@ class Syn_Population(object):
 
     def _export_summary(self):
         t = time.time()
-        summary_config = self.scenario_config.outputs.summary
+        try:
+            summary_config = self.scenario_config.outputs.summary
+        except ConfigError:
+            print("\tSummary creation not called in YAML")
+            return
         marginal_geo = self._return_marginal_geo()
         (geo_filename, geo_filetype) = (
             summary_config.geo.filename, summary_config.geo.filetype)

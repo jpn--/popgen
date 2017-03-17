@@ -13,7 +13,5 @@ Synthetic Population Generator 2.0
 
 
 
-This fork contains code that has been modified to be compatible with Python 3.5 and up.
-It is *not* currently compatibility with Python 2.7, although there's very little that would need
-to be fixed to make it so, and maybe we'll get to that sometime.
+This fork contains code that has been modified to be compatible with Python 2.7 and 3.5 and up.
 

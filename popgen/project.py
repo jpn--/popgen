@@ -1,3 +1,4 @@
+from __future__ import print_function
 import logging
 import os
 import time
@@ -28,6 +29,7 @@ class Project(object):
         # TODO: validating config file for YAML
         # TODO: validating YAML config file for field types
         # TODO: validating YAML for consistency across fields/config elements
+        print(os.getcwd())
         config_f = open(self.config_loc, "r")
         config_dict = yaml.load(config_f)
         self._config = Config(config_dict)
@@ -130,7 +132,7 @@ class Scenario(object):
 
 
 def popgen_run(project_config):
-    logger = logging.getLgger()
+    logger = logging.getLogger()
     pass
 
 if __name__ == "__main__":

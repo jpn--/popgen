@@ -39,3 +39,4 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+tutorials/1_basic_popgen_setup/*all_controls_ipu
