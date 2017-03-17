@@ -1,6 +1,6 @@
-=============================
+==================================
 Synthetic Population Generator 2.0
-=============================
+==================================
 
 .. image:: https://badge.fury.io/py/popgen.png
     :target: http://badge.fury.io/py/popgen
@@ -12,15 +12,8 @@ Synthetic Population Generator 2.0
     :target: https://pypi.python.org/pypi/popgen
 
 
-Synthetic Population Generator 2.0
 
+This fork contains code that has been modified to be compatible with Python 3.5 and up.
+It is *not* currently compatibility with Python 2.7, although there's very little that would need
+to be fixed to make it so, and maybe we'll get to that sometime.
 
-Features
---------
-
-For PopGen 2.1
-* Automatic data validator
-* Census data importer
-
-For PopGen 2.2
-* Output Data Analyzer with charting and table generation capabilities
