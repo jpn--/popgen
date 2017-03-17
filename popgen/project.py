@@ -3,12 +3,12 @@ import os
 import time
 import yaml
 
-from config import Config
-from data import DB
-from ipf import Run_IPF
-from reweighting import Run_Reweighting, Reweighting_DS
-from draw import Draw_Population
-from output import Syn_Population
+from .config import Config
+from .data import DB
+from .ipf import Run_IPF
+from .reweighting import Run_Reweighting, Reweighting_DS
+from .draw import Draw_Population
+from .output import Syn_Population
 
 
 class Project(object):
@@ -28,7 +28,7 @@ class Project(object):
         # TODO: validating config file for YAML
         # TODO: validating YAML config file for field types
         # TODO: validating YAML for consistency across fields/config elements
-        config_f = file(self.config_loc, "r")
+        config_f = open(self.config_loc, "r")
         config_dict = yaml.load(config_f)
         self._config = Config(config_dict)
         self.column_names_config = self._config.project.inputs.column_names
@@ -47,7 +47,7 @@ class Project(object):
     def run_scenarios(self):
         scenarios_config = self._config.project.scenario
         for scenario_config in scenarios_config:
-            print "Running Scenario: %s" % scenario_config.description
+            print ("Running Scenario: %s" % scenario_config.description)
             scenario_obj = Scenario(self.location,
                                     self.entities, self.housing_entities,
                                     self.person_entities,
@@ -84,7 +84,7 @@ class Scenario(object):
                                    self.column_names_config,
                                    self.scenario_config, self.db)
         self.run_ipf_obj.run_ipf()
-        print "IPF completed in: %.4f" % (time.time() - self.t)
+        print ("IPF completed in: %.4f" % (time.time() - self.t))
 
     def _run_weighting(self):
         reweighting_config = self.scenario_config.parameters.reweighting
@@ -98,7 +98,7 @@ class Scenario(object):
         self.run_reweighting_obj.run_reweighting(
             self.run_ipf_obj.region_constraints,
             self.run_ipf_obj.geo_constraints)
-        print "Reweighting completed in: %.4f" % (time.time() - self.t)
+        print ("Reweighting completed in: %.4f" % (time.time() - self.t))
 
     def _draw_sample(self):
         self.draw_population_obj = Draw_Population(
@@ -109,7 +109,7 @@ class Scenario(object):
             self.run_reweighting_obj.geo_stacked,
             self.run_reweighting_obj.region_sample_weights)
         self.draw_population_obj.draw_population()
-        print "Drawing completed in: %.4f" % (time.time() - self.t)
+        print ("Drawing completed in: %.4f" % (time.time() - self.t))
 
     def _report_results(self):
         self.syn_pop_obj = Syn_Population(
@@ -126,7 +126,7 @@ class Scenario(object):
         self.syn_pop_obj.add_records()
         self.syn_pop_obj.prepare_data()
         self.syn_pop_obj.export_outputs()
-        print "Results completed in: %.4f" % (time.time() - self.t)
+        print ("Results completed in: %.4f" % (time.time() - self.t))
 
 
 def popgen_run(project_config):
@@ -142,4 +142,4 @@ if __name__ == "__main__":
     p_obj = Project("../tutorials/1_basic_popgen_setup/configuration.yaml")
     p_obj.load_project()
     p_obj.run_scenarios()
-    print "Time it took: %.4f" % (time.time() - t)
+    print ("Time it took: %.4f" % (time.time() - t))

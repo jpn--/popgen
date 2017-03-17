@@ -86,11 +86,11 @@ class Draw_Population(object):
 
     def _pick_households(self, geo_id_frequencies, geo_cumulative_weights):
         last = 0
-        rand_numbers = np.random.random(geo_id_frequencies.sum())
+        rand_numbers = np.random.random(int(geo_id_frequencies.sum()))
         list_rows_syn_subpop = []
         for column in self.geo_frequencies.columns.values:
             rows = self.geo_row_idx[column]
-            column_frequency = geo_id_frequencies[column]
+            column_frequency = int(geo_id_frequencies[column])
             column_bins = np.searchsorted(geo_cumulative_weights[column],
                                           (rand_numbers[
                                            last:last + column_frequency]),

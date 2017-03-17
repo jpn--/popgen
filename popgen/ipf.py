@@ -62,7 +62,7 @@ class IPF(object):
     def run_ipf(self):
         self.frequencies = self._correct_zero_cell_issue()
         # self.frequencies = self.seed["frequency"].values
-        for c_iter in xrange(self.ipf_iters):
+        for c_iter in range(self.ipf_iters):
             # print "Iter:", c_iter
             self._adjust_cell_frequencies()
             # Checks for convergence every 5 iterations
@@ -273,7 +273,7 @@ class Run_IPF(object):
             sample_geo_id = geo_corr_to_sample.loc[geo_id,
                                                    self.sample_geo_name]
             if isinstance(sample_geo_id, pd.Series):
-                seed_geo_levels_list = range(len(seed_geo.index.names))
+                seed_geo_levels_list = tuple(range(len(seed_geo.index.names)))
                 seed_for_geo_id = (seed_geo.loc[sample_geo_id.tolist()]
                                    .sum(level=seed_geo_levels_list[1:]))
                 # print (seed_geo.loc[sample_geo_id.tolist()])
@@ -340,7 +340,7 @@ class Run_IPF(object):
 
     def _get_columns_constraints_dict(self, constraints_dict):
         columns_constraints_dict = {}
-        for entity, constraints in constraints_dict.iteritems():
+        for entity, constraints in constraints_dict.items():
             columns_constraints_dict[entity] = (constraints
                                                 .index.values.tolist())
         # print columns_constraints_dict

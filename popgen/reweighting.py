@@ -20,7 +20,7 @@ class Reweighting_DS(object):
         columns_count = len(groupby_columns)
         sample_restruct = (sample.groupby(groupby_columns)
                            .size()
-                           .unstack(level=range(1, columns_count))
+                           .unstack(level=tuple(range(1, columns_count)))
                            .fillna(0)
                            )
         return sample_restruct
@@ -52,11 +52,11 @@ class Reweighting_DS(object):
             else:
                 stacked_sample = sample_restruct.join(stacked_sample,
                                                       how="outer").fillna(0)
-        stacked_sample.sort(inplace=True)  # Sort by row indices
-        stacked_sample.sort_index(axis=1,
-                                  inplace=True)  # Sort columns alphabetically
+        stacked_sample.sort_index(inplace=True)  # Sort by row indices
         stacked_sample.columns = pd.Index(stacked_sample.columns,
-                                          tuplelize_cols=False)
+                                          tuplelize_cols=True)
+        # stacked_sample.sort_index(axis=1,
+                                  # inplace=True)  # Sort columns alphabetically
         return stacked_sample
 
 
@@ -117,8 +117,8 @@ class Run_Reweighting(object):
         # TODO: In the future change the frequency at which
         # performance measures are stored as a parameter that is
         # specified by the user
-        self.iters_to_archive = range(0, self.outer_iterations,
-                                      self.archive_performance_frequency)
+        self.iters_to_archive = tuple(range(0, self.outer_iterations,
+                                      self.archive_performance_frequency))
         self.average_diffs = pd.DataFrame(index=self.db.geo_ids,
                                           columns=self.iters_to_archive)
 
@@ -161,7 +161,7 @@ class Run_Reweighting(object):
                 #       (time.time() - t))
             self._populate_sample_weights(sample_weights, region_id, geo_ids)
             # print self.average_deviations
-            print "\tsample_weights sum:", sample_weights.sum()
+            print ("\tsample_weights sum:", sample_weights.sum())
 
     def _adjust_sample_weights(self, sample_weights, constraints,
                                iters=1, geo=False):
@@ -236,7 +236,7 @@ class Run_Reweighting(object):
 
     def _find_equation(self, contrib, weights_mul_contrib):
         root_power_weight = np.bincount(contrib, weights=weights_mul_contrib)
-        root_power = np.array(range(contrib.max() + 1))
+        root_power = np.arange(contrib.max() + 1)
         return root_power[1:], root_power_weight[1:]
 
     def _optimizing_function(self, root, root_power, root_power_weight,

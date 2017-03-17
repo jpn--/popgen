@@ -125,16 +125,16 @@ class Syn_Population(object):
         sample_list = [self.db.sample[entity]
                        for entity in entities]
         stacked_sample = pd.concat(sample_list).fillna(0)
-        stacked_sample.sort(inplace=True)
+        stacked_sample.sort_index(inplace=True)
         return stacked_sample
 
     def add_records(self):
         geo_id_rows_syn_dict = self.draw_population_obj.geo_id_rows_syn_dict
-        for geo_id, geo_id_rows_syn in geo_id_rows_syn_dict.iteritems():
+        for geo_id, geo_id_rows_syn in geo_id_rows_syn_dict.items():
             geo_id_pop_syn = (
                 self._get_stacked_geo_for_geo_id(geo_id, geo_id_rows_syn))
             self.pop_rows_syn_dict[geo_id] = geo_id_pop_syn
-            self.pop_rows_syn_dict[geo_id][self.unique_id_in_geo_name] = (
+            self.pop_rows_syn_dict[geo_id][self.unique_id_in_geo_name] = tuple(
                 range(1, geo_id_rows_syn.shape[0]+1))
             # print self.pop_rows_syn_dict[geo_id].head()
             # raw_input()
@@ -166,14 +166,14 @@ class Syn_Population(object):
         housing_data = (
             geo_id_pop_syn.loc[:, [self.geo_name]].join(
                 self.housing_stacked_sample))
-        print "housing rows:", housing_data.shape
+        print ("housing rows:", housing_data.shape)
         return housing_data
 
     def _get_person_data_for_indexes(self, geo_id_pop_syn):
         person_data = (
             geo_id_pop_syn.loc[:, [self.geo_name]].join(
                 self.person_stacked_sample))
-        print "person rows:", person_data.shape
+        print ("person rows:", person_data.shape)
         return person_data
 
     def prepare_data(self):
@@ -191,8 +191,8 @@ class Syn_Population(object):
         #    self.person_syn_dict.values(), copy=False)
         # print self.pop_syn_data["housing"].shape
         # print self.pop_syn_data["person"].shape
-        print "Time elapsed for stacking population is : %.4f" % (
-            time.time() - t)
+        print ("Time elapsed for stacking population is : %.4f" % (
+            time.time() - t))
 
     def _create_synthetic_population(self):
         t = time.time()
@@ -202,10 +202,10 @@ class Syn_Population(object):
         self.pop_syn_data["person"] = (
             self.pop_syn.loc[:, self.pop_syn_geo_id_columns].join(
                 self.person_stacked_sample))
-        print "\tSize of the housing population table:", (
-            self.pop_syn_data["housing"].shape)
-        print "\tSize of the person population table:", (
-            self.pop_syn_data["person"].shape)
+        print ("\tSize of the housing population table:", (
+            self.pop_syn_data["housing"].shape))
+        print ("\tSize of the person population table:", (
+            self.pop_syn_data["person"].shape))
         # print "Time elapsed for synthetic population 1 is : %.4f" % (
         #    time.time() - t)
 
@@ -214,17 +214,17 @@ class Syn_Population(object):
         # self.pop_syn_data["housing"].reset_index(inplace=True)
         self.pop_syn_data["housing"].set_index(
             self.pop_syn_housing_matching_id_columns, inplace=True, drop=False)
-        self.pop_syn_data["housing"].sort(inplace=True)
+        self.pop_syn_data["housing"].sort_index(inplace=True)
 
         # self.pop_syn_data["person"].reset_index(inplace=True)
         self.pop_syn_data["person"].set_index(
             self.pop_syn_person_matching_id_columns, inplace=True,
             drop=False)
-        self.pop_syn_data["person"].sort(inplace=True)
+        self.pop_syn_data["person"].sort_index(inplace=True)
         # print "Time elapsed for index is : %.4f" % (time.time() - t)
 
     def export_outputs(self):
-        print "\tGenerating Outputs"
+        print ("\tGenerating Outputs")
         t = time.time()
         self._export_performance_data()
         self._export_multiway_tables()
@@ -232,8 +232,8 @@ class Syn_Population(object):
         self._export_weights()
         self._export_synthetic_population()
         self._pretty_print_scenario_configuration_file_to_output()
-        print "\tTime elapsed for generating outputs is : %.4f" % (
-            time.time() - t)
+        print ("\tTime elapsed for generating outputs is : %.4f" % (
+            time.time() - t))
 
     def _pretty_print_scenario_configuration_file_to_output(self):
         filepath = os.path.join(self.outputlocation,
@@ -277,7 +277,7 @@ class Syn_Population(object):
         df.to_csv(filepath)
 
     def _export_all_df_in_dict(self, dict_of_dfs, fileprefix):
-        for key, value in dict_of_dfs.iteritems():
+        for key, value in dict_of_dfs.items():
             filename = "%s%s.csv" % (fileprefix, key)
             filepath = os.path.join(self.outputlocation, filename)
             value.to_csv(filepath)
@@ -285,7 +285,7 @@ class Syn_Population(object):
     def _export_multiway_tables(self):
         multiway_tables = self._return_multiway_tables()
 
-        for (filename, filetype), table in multiway_tables.iteritems():
+        for (filename, filetype), table in multiway_tables.items():
             filepath = os.path.join(self.outputlocation, filename)
             table.to_csv(
                 filepath, sep=self.filetype_sep_dict[filetype])
@@ -302,8 +302,8 @@ class Syn_Population(object):
             multiway_table_entity = self._return_aggregate_by_geo(
                 variables, entity_type, entity)
             multiway_tables[(filename, filetype)] = multiway_table_entity
-            print "\t\tTime elapsed for each table is: %.4f" % (
-                time.time() - t)
+            print ("\t\tTime elapsed for each table is: %.4f" % (
+                time.time() - t))
         return multiway_tables
 
     def _export_synthetic_population(self):
@@ -318,14 +318,14 @@ class Syn_Population(object):
             filepath = os.path.join(self.outputlocation, filename)
             # self.pop_syn_data[entity_type].to_csv(
             #    filepath, sep=self.filetype_sep_dict[filetype], index=False)
-            self.pop_syn_data[entity_type].sort(
-                sort_columns, inplace=True)
+            self.pop_syn_data[entity_type].sort_values(
+                by=sort_columns, inplace=True)
             self.pop_syn_data[entity_type].reset_index(drop=True, inplace=True)
             self.pop_syn_data[entity_type].index.name = (
                 "unique_%s_id" % entity_type)
             self.pop_syn_data[entity_type].to_csv(
                 filepath, sep=self.filetype_sep_dict[filetype])
-        print "\tTime to write syn pop files is: %.4f" % (time.time() - t)
+        print ("\tTime to write syn pop files is: %.4f" % (time.time() - t))
 
     def _return_aggregate_by_geo(self, variables, entity_type, entity):
         if isinstance(variables, str):
@@ -335,7 +335,7 @@ class Syn_Population(object):
         multiway_table = (self.pop_syn_data[entity_type].groupby(
             groupby_columns).size())
         multiway_table_entity = (
-            multiway_table[entity].unstack(level=range(1, columns_count-1))
+            multiway_table[entity].unstack(level=tuple(range(1, columns_count-1)))
             )
         return multiway_table_entity
 
@@ -356,7 +356,7 @@ class Syn_Population(object):
         filepath = os.path.join(self.outputlocation, region_filename)
         marginal_region.to_csv(
             filepath, sep=self.filetype_sep_dict[region_filetype])
-        print "\tSummary creation took: %.4f" % (time.time() - t)
+        print ("\tSummary creation took: %.4f" % (time.time() - t))
         # print marginal_region
 
     def _return_marginal_region(self, marginal_geo):
@@ -393,7 +393,7 @@ class Syn_Population(object):
         stacked_marginal.index.name = "categories"
         stacked_marginal.reset_index(inplace=True)
         stacked_marginal.set_index(["name", "categories"], inplace=True)
-        stacked_marginal.sort(inplace=True)  # Sort by row indices
+        stacked_marginal.sort_index(inplace=True)  # Sort by row indices
         return stacked_marginal.T
 
     def _report_summary(self, geo_id_rows_syn, geo_id_frequencies,
@@ -421,7 +421,7 @@ class Syn_Population(object):
         sad_in_constraints = (geo_id_synthetic["abs_diff_constraint"]).sum()
         sd_in_constraints = (geo_id_synthetic["diff_constraint"]).sum()
 
-        print "%.4f, %f, %f, %f, %f, %f" % (stat, p_value, aad_in_frequencies,
+        print ("%.4f, %f, %f, %f, %f, %f" % (stat, p_value, aad_in_frequencies,
                                             aad_in_constraints,
                                             sad_in_constraints,
-                                            sd_in_constraints)
+                                            sd_in_constraints))

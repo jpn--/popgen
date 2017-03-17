@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import numpy as np
 
-from config import ConfigError
+from .config import ConfigError
 
 
 class DB(object):
@@ -89,8 +89,8 @@ class DB(object):
             self.geo_ids = []
             for region_id in self.region_ids:
                 self.geo_ids += self.get_geo_ids_for_region(region_id)
-        except ConfigError, e:
-            print "KeyError", e
+        except ConfigError as e:
+            print ("KeyError", e)
             self.geo_ids = self.geo_ids_all
             # self.sample_geo_ids = self.sample_geo_ids_all
             self.region_ids = self.region_ids_all

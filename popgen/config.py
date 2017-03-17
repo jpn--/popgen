@@ -16,7 +16,7 @@ def wrap_config_value(value):
     then attribute access x.attribute1.attribute2 is used to access "Value".
     Also, x.attribute can be used to access the dictionary {attribute: 'value'}
     """
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         return value
 
     try:
@@ -45,7 +45,7 @@ class Config(object):
     def return_value(self, key):
         try:
             value = self._data[key]
-        except KeyError, e:
+        except KeyError as e:
             raise ConfigError(
                 "Key - %s doesn't exist in the YAML configuration" % key)
         return value
@@ -78,5 +78,5 @@ if __name__ == "__main__":
 
     config_dict = yaml.load(yaml_f)
     config_obj = Config(config_dict)
-    print config_obj.project.name
-    print config_obj["project"]["name"]
+    print (config_obj.project.name)
+    print (config_obj["project"]["name"])
