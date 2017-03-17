@@ -18,7 +18,7 @@ def run():
     """
     args = sys.argv[1:]
 
-    print args
+    print (args)
 
     if len(args) != 1:
         raise ArgumentsError(
@@ -35,6 +35,6 @@ def run():
     p_obj = Project(config_loc=args[0])
     p_obj.load_project()
     p_obj.run_scenarios()
-    print "Time it took: %.4f" % (time.time() - t)
+    print ("Time it took: %.4f" % (time.time() - t))
 
 run()
