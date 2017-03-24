@@ -2,6 +2,12 @@
 Tests for `popgen` module.
 """
 import pytest
+
+import sys
+print('<sys.path>')
+print(sys.path)
+print('</sys.path>')
+
 from popgen import Project
 
 
