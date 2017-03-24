@@ -25,7 +25,7 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
 
-  - conda create -q -n popgen_venv python=$TRAVIS_PYTHON_VERSION pip numpy scipy pandas PyYAML
+  - conda create -q -n popgen_venv python=$TRAVIS_PYTHON_VERSION pip numpy scipy pandas PyYAML pytest
   - source activate popgen_venv
   - python setup.py install
 
