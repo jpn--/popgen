@@ -3,7 +3,7 @@
 History
 -------
 
-2.1.b1 (March 16, 2015)
+2.1.b1 (March 23, 2017)
 +++++++++++++++++++++++
 
 * Updated for Python 3.5+
